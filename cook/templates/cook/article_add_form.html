@@ -8,10 +8,12 @@
             <h2 class="text-center">Добавление новой статьи</h2>
             <form action="" method="post" enctype="multipart/form-data">
                 <!--  Fields for filling-->
-                
+                {% csrf_token %}
+                {% include 'components/_form_errors.html' %}
+                {{form.as_p}}
                 <button class="btn btn-dark" type="submit">Добавить статью</button>
             </form>
-        </div>
+        </div> 
     </div>
 </div>
 <div><div style="margin-top: 100px;"></div></div>
