@@ -1,1 +1,22 @@
 {% extends 'base.html' %}
+
+{% block main %}
+<h2>Кулинарный портал</h2>
+<div class="d-flex justify-content-between">
+    <div class="col-3">
+        <!-- Sidebar-->
+
+        {% for category in categories %}
+
+        {% include 'cook/components/_category_buttons.html' %}
+        {% endfor %}
+    </div>
+    <div class="col-8">
+    <!-- Posts-->
+    
+    {% for post in posts  %}
+        {% include 'cook/components/_post_list.html' %}
+    {% endfor %}
+    </div>
+</div>
+{% endblock main %}

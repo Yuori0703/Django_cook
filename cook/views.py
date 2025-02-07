@@ -4,9 +4,21 @@ from .models import Category, Post
 
 def index(request):
     posts = Post.objects.all()
-    
+    categories = Category.objects.all()
     context = {
         "title": "Главная страница",
-        "posts": posts
+        "posts": posts,
+        "categories": categories
+    }
+    return render (request, 'cook/index.html', context)
+
+
+def category_list(request, pk):
+    posts = Post.objects.filter(category_id=pk)
+    categories = Category.objects.all()
+    context = {
+        "title": posts[0].category,
+        "posts": posts,
+        "categories": categories
     }
     return render (request, 'cook/index.html', context)
