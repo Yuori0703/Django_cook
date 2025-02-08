@@ -1,6 +1,6 @@
 from typing import Any
 from django.db.models.query import QuerySet
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Category, Post, Comment
 from django.db.models import F, Q
 from .forms import PostAddForm, LoginForm, RegistrationForm, CommentForm
@@ -27,6 +27,10 @@ class Index(ListView):
     template_name = 'cook/index.html'
     extra_context = {'title': "Главная страница"}
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categories'] = Category.objects.all()
+        return context
     
 
 # def category_list(request, pk):
@@ -40,7 +44,7 @@ class Index(ListView):
 #     return render (request, 'cook/index.html', context)
 
 
-class Article_by_category(Index):
+class ArticleByCategory(Index):
     def get_queryset(self):
         return Post.objects.filter(category_id=self.kwargs['pk'], is_published=True)
 
