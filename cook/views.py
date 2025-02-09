@@ -11,6 +11,10 @@ from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordChangeView
+from .serializers import PostSerializer, CategorySerializer
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 
 
 # def index(request):
@@ -202,3 +206,33 @@ def profile(request, user_id):
         'posts': posts
     } 
     return render(request, 'cook/profile.html', context)    
+
+
+class UserChangePassword(PasswordChangeView):
+    success_url =reverse_lazy('index')
+    template_name = 'cook/password_change_form.html'
+    
+    
+class CookAPI(ListAPIView):
+    """Выдача всех статей по api"""
+    queryset = Post.objects.filter(is_published = True)
+    serializer_class = PostSerializer
+    
+    
+class CookAPIDetail(RetrieveAPIView):
+    """Выдача статьи по API"""
+    queryset = Post.objects.filter(is_published = True)
+    serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated,)
+    
+    
+class CookCategoryAPI(ListAPIView):
+    """Выдача всех категорий по api"""
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    
+    
+class CookCategoryAPIDetail(RetrieveAPIView):
+    """Выдача категорий по API"""
+    queryset = Post.objects.filter(is_published = True)
+    serializer_class = CategorySerializer
