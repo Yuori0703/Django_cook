@@ -4,6 +4,7 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from .views import *
+from django.views.decorators.cache import cache_page
 
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -14,15 +15,15 @@ from rest_framework_simplejwt.views import (
     
 schema_view = get_schema_view(
     openapi.Info(
-        title='Главный дед мороз'б
+        title='Главный дед мороз',
         default_version="v 0.0.1",
         description="Документация по API к курсу кулинария",
         terms_of_service="https://www.google.com/policies/terms",
         contact=openapi.Contact(email='example@mail.com'),
-        license=openapi.License(name='BCD License')
+        license=openapi.License(name='BCD License'),
     ),
     public=True,
-    permission_classes=[permissions.Allowly, ],
+    permission_classes=[permissions.AllowAny, ],
 )
 
 
@@ -30,6 +31,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     # path('', index, name='index'),
     path("", Index.as_view(), name = 'index'),
+    # path("",cache_page(60 * 15)(Index.as_view()), name = 'index'),
     # path('category/<int:pk>/', category_list, name='category_list' ),
      path('category/<int:pk>/', ArticleByCategory.as_view(), name='category_list' ),
     # path('post/<int:pk>/', post_detail, name='post_detail' ),
@@ -56,6 +58,19 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    
+    
+    # swagger
+    # path(
+    #     "swagger-ui/",
+    #     TemplateView.as_view(
+    #         template_name="swagger/swagger_ui.html",
+    #         extra_context={"schema_url": "openapi-schema"},
+    #     ),
+    #     name="swagger-ui",
+    # ),
+    path('swagger-ui/', SwaggerAPIDoc.as_view(), name='swagger-ui'),
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=1), name='schena-json'),
     
 ]
     

@@ -15,6 +15,7 @@ from django.contrib.auth.views import PasswordChangeView
 from .serializers import PostSerializer, CategorySerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
+from django.views.generic import TemplateView
 
 
 # def index(request):
@@ -236,3 +237,10 @@ class CookCategoryAPIDetail(RetrieveAPIView):
     """Выдача категорий по API"""
     queryset = Post.objects.filter(is_published = True)
     serializer_class = CategorySerializer
+    
+    
+class SwaggerAPIDoc(TemplateView):
+    template_name = 'swagger/swagger_ui.html'
+    extra_context ={
+        "schema_url": 'openapi-schema'
+    }
