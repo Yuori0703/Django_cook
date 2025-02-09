@@ -17,6 +17,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+
     
 class Post(models.Model):
     title = models.CharField(max_length = 255, verbose_name = "название")
@@ -27,6 +28,7 @@ class Post(models.Model):
     wathed = models.IntegerField(default = 0, verbose_name = "просмотрено")
     is_published = models.BooleanField(default = True, verbose_name = "публикация")
     category = models.ForeignKey(Category, on_delete = models.CASCADE, verbose_name = "категория")
+    author = models.ForeignKey(User, default=None, null=True, blank=True, on_delete= models.CASCADE)
  
     def __str__(self):
         return self.title

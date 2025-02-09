@@ -3,8 +3,11 @@
 <div class="d-flex justify-content-between"><div class="col-8">
     <div class="card"><div class="card-header d-flex justify-content-between">{{post.category}}
         <div>
+            {% if request.user == post.author %}
             <a href="{% url 'post_delete' post.pk %}" class="btn btn-dark">Удалить</a>
             <a href="{% url 'post_update' post.pk %}" class="btn btn-dark">Изменить</a>
+            {% endif %}
+
             <a href="{% url 'category_list' post.category.pk %}" class="btn btn-dark">Назад</a>
         </div>
     </div>
@@ -19,7 +22,7 @@
         <p class="card-text"><p>{{post.content|linebreaks}}</p>
     </div>
         <div class="card-footer d-flex justify-content-between"><p class="card-text">{{post.created_at}}</p>
-            <a href="/profile/1">Автор статьи: Какой то человек</a>
+            <a href="{% url 'profile' post.author.pk %}">{{post.author}}</a>
             <p class="card-text">{{post.wathed}}</p>
         </div>
     </div>
@@ -37,11 +40,14 @@
         <button class="btn btn-dark" type="submit">Добавить комментарий</button>
     </form>
     {% endif %}
-    <div class="card mt-2"><h5 class="card-header">Какой то человек</h5>
-        <div class="card-body">
-            <p class="card-text">Текст отзыва</p>
-        </div>
-    </div>
+    {% for comment in comments  %}
+    <div class="card mt-2">
+         <h5 class="card-header">{{comment.user}}  ({{comment.created_at}})</h5>
+         <div class="card-body">
+             <p class="card-text">{{comment}}</p>
+         </div>
+     </div>
+    {% endfor %}
 </div>
 <!--  Recommendation-->
 <div class="col-1"></div>

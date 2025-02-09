@@ -1,5 +1,7 @@
 from typing import Any
 from django.db.models.query import QuerySet
+from django.forms import BaseModelForm
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Category, Post, Comment
 from django.db.models import F, Q
@@ -8,6 +10,7 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
+from django.contrib.auth.models import User
 
 
 # def index(request):
@@ -83,6 +86,7 @@ class PostDetail(DeleteView):
         posts = Post.objects.all().exclude(pk=self.kwargs['pk']).order_by('-wathed')
         context['title'] = post.title
         context['ext_posts'] = posts
+        context['comments'] = Comment.objects.filter(post=post)
         if self.request.user.is_authenticated:
             context['comment_form'] = CommentForm
         return context
@@ -109,6 +113,10 @@ class AddPost(CreateView):
     form_class = PostAddForm
     template_name = 'cook/article_add_form.html'
     extra_context = {'title': 'Добавить статью'}
+    
+    def form_valid(self, form: BaseModelForm):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
     
     
 class PostUpdate(UpdateView):
@@ -184,3 +192,13 @@ def add_comment(request, post_id):
         messages.success(request, "Ваш коментарий успешно добавлен")    
             
     return redirect('post_detail', post_id)
+
+
+def profile(request, user_id):
+    user = User.objects.get(pk=user_id)
+    posts = Post.objects.filter(author=user)
+    context ={
+        'user': user,
+        'posts': posts
+    } 
+    return render(request, 'cook/profile.html', context)    
